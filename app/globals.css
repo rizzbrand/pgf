@@ -1,0 +1,267 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* PGF brand palette (official) */
+  --pgf-dark-purple: #541b57;
+  --pgf-bright-purple: #6f2a87;
+  --pgf-yellow: #ffd800;
+  --pgf-off-white: #f6eae3;
+  --pgf-light-gray: #b6afb7;
+
+  --background: var(--pgf-off-white);
+  /* Body text: readable on cream (slightly darker than dark purple for long copy) */
+  --foreground: #2a152c;
+  --card: #fffcf8;
+  --card-foreground: #2a152c;
+  --popover: #fffcf8;
+  --popover-foreground: #2a152c;
+  --primary: var(--pgf-dark-purple);
+  --primary-foreground: var(--pgf-off-white);
+  --secondary: color-mix(in srgb, var(--pgf-light-gray) 28%, var(--pgf-off-white));
+  --secondary-foreground: var(--pgf-dark-purple);
+  --muted: color-mix(in srgb, var(--pgf-light-gray) 35%, var(--pgf-off-white));
+  --muted-foreground: #5c4a5e;
+  /* Yellow: optimism accent (CTAs, highlights) — pair with dark text */
+  --accent: var(--pgf-yellow);
+  --accent-foreground: var(--pgf-dark-purple);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: color-mix(in srgb, var(--pgf-light-gray) 55%, white);
+  --input: color-mix(in srgb, var(--pgf-light-gray) 45%, var(--pgf-off-white));
+  --ring: var(--pgf-bright-purple);
+  --chart-1: var(--pgf-bright-purple);
+  --chart-2: var(--pgf-dark-purple);
+  --chart-3: var(--pgf-yellow);
+  --chart-4: color-mix(in srgb, var(--pgf-bright-purple) 70%, white);
+  --chart-5: color-mix(in srgb, var(--pgf-dark-purple) 75%, white);
+  --radius: 0.5rem;
+  --sidebar: var(--pgf-off-white);
+  --sidebar-foreground: #2a152c;
+  --sidebar-primary: var(--pgf-dark-purple);
+  --sidebar-primary-foreground: var(--pgf-off-white);
+  --sidebar-accent: var(--pgf-yellow);
+  --sidebar-accent-foreground: var(--pgf-dark-purple);
+  --sidebar-border: color-mix(in srgb, var(--pgf-light-gray) 55%, white);
+  --sidebar-ring: var(--pgf-bright-purple);
+}
+
+.dark {
+  --background: #1e0f22;
+  --foreground: var(--pgf-off-white);
+  --card: #2a152c;
+  --card-foreground: var(--pgf-off-white);
+  --popover: #2a152c;
+  --popover-foreground: var(--pgf-off-white);
+  --primary: var(--pgf-bright-purple);
+  --primary-foreground: var(--pgf-off-white);
+  --secondary: #3d2444;
+  --secondary-foreground: var(--pgf-off-white);
+  --muted: #3d2444;
+  --muted-foreground: color-mix(in srgb, var(--pgf-light-gray) 92%, white);
+  --accent: var(--pgf-yellow);
+  --accent-foreground: var(--pgf-dark-purple);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: #4a3552;
+  --input: #4a3552;
+  --ring: var(--pgf-yellow);
+  --chart-1: var(--pgf-bright-purple);
+  --chart-2: var(--pgf-yellow);
+  --chart-3: color-mix(in srgb, var(--pgf-off-white) 85%, var(--pgf-bright-purple));
+  --chart-4: var(--pgf-dark-purple);
+  --chart-5: color-mix(in srgb, var(--pgf-bright-purple) 65%, black);
+  --sidebar: #2a152c;
+  --sidebar-foreground: var(--pgf-off-white);
+  --sidebar-primary: var(--pgf-bright-purple);
+  --sidebar-primary-foreground: var(--pgf-off-white);
+  --sidebar-accent: var(--pgf-yellow);
+  --sidebar-accent-foreground: var(--pgf-dark-purple);
+  --sidebar-border: #4a3552;
+  --sidebar-ring: var(--pgf-yellow);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  /* Brand tokens (optional utilities: bg-pgf-yellow, text-pgf-dark-purple, etc.) */
+  --color-pgf-dark-purple: var(--pgf-dark-purple);
+  --color-pgf-bright-purple: var(--pgf-bright-purple);
+  --color-pgf-yellow: var(--pgf-yellow);
+  --color-pgf-off-white: var(--pgf-off-white);
+  --color-pgf-light-gray: var(--pgf-light-gray);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--pgf-yellow) 40%, transparent);
+  }
+}
+
+@layer components {
+  .font-serif {
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 72;
+    letter-spacing: -0.01em;
+  }
+
+  .surface {
+    @apply bg-card text-card-foreground border border-border/70;
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent),
+      0 24px 72px -48px color-mix(in oklab, var(--foreground) 22%, transparent);
+  }
+
+  .hairline {
+    border-color: color-mix(in oklab, var(--border) 70%, transparent);
+  }
+
+  /**
+   * Cream band surfaces — lock light-theme tokens + base text color.
+   * `html.dark` sets light `--foreground` globally; utilities like `text-foreground` must not
+   * pull that onto these cream sections, so we override with explicit hex + !important where needed.
+   */
+  .pgf-band-surface {
+    --background: var(--pgf-off-white);
+    --foreground: #2a152c !important;
+    --card: #fffcf8;
+    --card-foreground: #2a152c;
+    --popover: #fffcf8;
+    --popover-foreground: #2a152c;
+    --primary: var(--pgf-dark-purple);
+    --primary-foreground: var(--pgf-off-white);
+    --secondary: color-mix(in srgb, var(--pgf-light-gray) 28%, var(--pgf-off-white));
+    --secondary-foreground: var(--pgf-dark-purple);
+    --muted: color-mix(in srgb, var(--pgf-light-gray) 35%, var(--pgf-off-white));
+    --muted-foreground: #5c4a5e !important;
+    --accent: var(--pgf-yellow);
+    --accent-foreground: var(--pgf-dark-purple);
+    --border: color-mix(in srgb, var(--pgf-light-gray) 55%, white);
+    --input: color-mix(in srgb, var(--pgf-light-gray) 45%, var(--pgf-off-white));
+    --ring: var(--pgf-bright-purple);
+    color: #2a152c !important;
+    color-scheme: light;
+  }
+
+  /** Full gradient (home CTA + main footer). */
+  .bg-pgf-band {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--pgf-light-gray) 24%, var(--pgf-off-white)) 0%,
+      color-mix(in srgb, var(--pgf-light-gray) 8%, var(--pgf-off-white)) 55%,
+      var(--pgf-off-white) 100%
+    );
+  }
+
+  /** Softer cream gradient (legacy / optional). */
+  .bg-pgf-band-muted {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--pgf-light-gray) 22%, var(--pgf-off-white)) 0%,
+      color-mix(in srgb, var(--pgf-light-gray) 12%, var(--pgf-off-white)) 100%
+    );
+  }
+
+  /**
+   * Brand footer — dark purple surface (matches primary / dark CTA language).
+   * Not tied to `html.dark`; avoids flash when combined with removing `data-reveal` GSAP fade-in.
+   */
+  .pgf-footer-surface {
+    background: linear-gradient(
+      180deg,
+      var(--pgf-dark-purple) 0%,
+      color-mix(in srgb, var(--pgf-dark-purple) 55%, #1a081c) 100%
+    );
+    color: var(--pgf-off-white);
+  }
+}
+
+/*
+ * Unlayered: beat Tailwind utilities when `html.dark` makes `text-foreground` light.
+ * Keeps body copy + links dark on cream bands; leaves primary buttons (cream on purple) alone.
+ */
+.pgf-band-surface .text-foreground:not([class*='primary-foreground']),
+.pgf-band-surface .text-foreground\/70 {
+  color: #2a152c !important;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .pgf-band-surface .text-foreground\/70 {
+    color: color-mix(in oklab, #2a152c 70%, transparent) !important;
+  }
+}
+
+.pgf-band-surface .text-muted-foreground,
+.pgf-band-surface .text-muted-foreground\/90 {
+  color: #5c4a5e !important;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .pgf-band-surface .text-muted-foreground\/90 {
+    color: color-mix(in oklab, #5c4a5e 90%, transparent) !important;
+  }
+}
+
+/* Outline controls on cream: `asChild` often renders `<a>`, not `<button>` */
+.dark .pgf-band-surface [data-slot='button'][class~='border'] {
+  background-color: transparent !important;
+  color: #2a152c !important;
+  border-color: color-mix(in srgb, var(--pgf-light-gray) 55%, white) !important;
+}
+
+.dark .pgf-band-surface [data-slot='button'][class~='border']:hover {
+  background-color: color-mix(in srgb, var(--pgf-yellow) 35%, transparent) !important;
+  color: #2a152c !important;
+}
