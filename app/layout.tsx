@@ -35,6 +35,7 @@ export const metadata: Metadata = {
       { url: '/pgf-svg.PNG', type: 'image/png' },
       { url: '/icon.svg', type: 'image/svg+xml' },
     ],
+    apple: [{ url: '/apple-touch-icon.png', type: 'image/png' }],
   },
   alternates: {
     canonical: '/',

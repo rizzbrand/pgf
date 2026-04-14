@@ -233,7 +233,7 @@ export function PgfChatWidget() {
                     PGF Assistant
                   </DialogTitle>
                   <DialogDescription className="text-xs text-white/65">
-                    Quick answers · demo replies
+                    
                   </DialogDescription>
                 </div>
               </div>
@@ -306,9 +306,7 @@ export function PgfChatWidget() {
                 <Send className="size-4" />
               </Button>
             </div>
-            <p className="mt-2 text-center text-[10px] text-muted-foreground">
-              UI only — no data is sent to a server.
-            </p>
+           
           </div>
         </DialogContent>
       </Dialog>
