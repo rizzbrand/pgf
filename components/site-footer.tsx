@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { Instagram, Linkedin, MapPin, Twitter } from 'lucide-react'
+import { Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from 'lucide-react'
 
 import { SiteLogo } from '@/components/site-logo'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 type SiteFooterProps = {
@@ -39,6 +40,12 @@ const quickLinks = [
   { href: '/donate', label: 'Donate' },
   { href: '/contact', label: 'Contact' },
 ] as const
+
+const PGF_CONTACT = {
+  email: 'info@privilegegirlsfoundation.com',
+  phone: '+233 203 427 795',
+  location: 'North Legon, Accra, Ghana',
+} as const
 
 function FooterLink({
   href,
@@ -93,8 +100,24 @@ export function SiteFooter({ variant = 'full', actions, className }: SiteFooterP
               </p>
               <p className="mt-4 inline-flex items-start gap-2 text-sm text-white/70">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--pgf-yellow)]" aria-hidden />
-                <span>Accra, Ghana</span>
+                <span>{PGF_CONTACT.location}</span>
               </p>
+              <div className="mt-5 grid gap-2 text-sm text-white/70">
+                <a
+                  href={`mailto:${PGF_CONTACT.email}`}
+                  className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
+                >
+                  <Mail className="size-4 text-white/80" aria-hidden />
+                  {PGF_CONTACT.email}
+                </a>
+                <a
+                  href={`tel:${PGF_CONTACT.phone.replace(/\s+/g, '')}`}
+                  className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
+                >
+                  <Phone className="size-4 text-white/80" aria-hidden />
+                  {PGF_CONTACT.phone}
+                </a>
+              </div>
             </div>
             {actions ? (
               <div className="flex flex-wrap items-center gap-3 lg:shrink-0">{actions}</div>
@@ -144,8 +167,41 @@ export function SiteFooter({ variant = 'full', actions, className }: SiteFooterP
             </p>
             <p className="mt-5 inline-flex items-start gap-2 text-sm text-white/70">
               <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--pgf-yellow)]" aria-hidden />
-              <span>Based in Accra, Ghana</span>
+              <span>Based in {PGF_CONTACT.location}</span>
             </p>
+            <div className="mt-7 flex flex-col gap-2.5">
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  className="rounded-full bg-[var(--pgf-yellow)] text-[var(--pgf-dark-purple)] hover:bg-[var(--pgf-yellow)]/90"
+                  asChild
+                >
+                  <Link href="/donate">Donate</Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  asChild
+                >
+                  <Link href="/contact">Contact</Link>
+                </Button>
+              </div>
+              <div className="grid gap-2 text-sm text-white/70">
+                <a
+                  href={`mailto:${PGF_CONTACT.email}`}
+                  className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
+                >
+                  <Mail className="size-4 text-white/80" aria-hidden />
+                  {PGF_CONTACT.email}
+                </a>
+                <a
+                  href={`tel:${PGF_CONTACT.phone.replace(/\s+/g, '')}`}
+                  className="inline-flex items-center gap-2 underline-offset-4 hover:underline"
+                >
+                  <Phone className="size-4 text-white/80" aria-hidden />
+                  {PGF_CONTACT.phone}
+                </a>
+              </div>
+            </div>
           </div>
 
           <div className="grid gap-10 sm:grid-cols-3 lg:col-span-7 lg:grid-cols-3 lg:gap-8">
@@ -171,6 +227,9 @@ export function SiteFooter({ variant = 'full', actions, className }: SiteFooterP
             </div>
             <div>
               <SectionLabel>Connect</SectionLabel>
+              <p className="text-xs text-white/55 leading-relaxed mb-4 max-w-[28ch]">
+                Follow for updates and stories. Links can be updated when handles are ready.
+              </p>
               <ul className="flex flex-col gap-3">
                 {socialLinks.map(({ href, label, Icon }) => (
                   <li key={label}>

@@ -22,25 +22,49 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: 'Privilege Girls Foundation | Building Women Who Build Businesses',
-  description: 'Empowering ambitious women entrepreneurs through mentorship, resources, and community. Join PGF and transform your vision into reality.',
+  metadataBase: new URL('https://privilegegirlsfoundation.com'),
+  title: {
+    default: 'Privilege Girls Foundation | Building Women Who Build Businesses',
+    template: '%s | Privilege Girls Foundation',
+  },
+  description:
+    'Privilege Girls Foundation (PGF) sponsors young women through fully funded vocational training and supports them beyond graduation until they are stable and earning.',
   generator: 'v0.app',
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/pgf-svg.PNG', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
+  },
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: 'Privilege Girls Foundation',
+    title: 'Privilege Girls Foundation | Building Women Who Build Businesses',
+    description:
+      'PGF sponsors young women through fully funded vocational training (hairdressing and fashion) and supports them beyond graduation.',
+    images: [{ url: '/logo2.PNG' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privilege Girls Foundation',
+    description:
+      'Fully funded vocational training and follow-through for young women in Ghana.',
+    images: ['/logo2.PNG'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
   },
 }
 

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo } from 'react'
-import { ArrowLeft, Clock, Mail, MapPin } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { ArrowLeft, Clock, Mail, MapPin, Phone } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteLogo } from '@/components/site-logo'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,10 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
-const contactEmail = 'hello@privilegegirlsfoundation.org'
+const contactEmail = 'info@privilegegirlsfoundation.com'
+const contactPhone = '+233 203 427 795'
+const contactWhatsApp = '+233 203 427 795'
+const contactLocation = 'North Legon, Accra, Ghana'
 
 const topicOptions = [
   { value: 'general', label: 'General enquiry' },
@@ -33,6 +36,9 @@ export default function ContactPage() {
     ],
     [],
   )
+  const [submitting, setSubmitting] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -96,7 +102,7 @@ export default function ContactPage() {
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 Privilege Girls Foundation
                 <br />
-                Accra, Ghana
+                {contactLocation}
               </p>
             </div>
             <div className="surface hairline rounded-2xl p-6">
@@ -108,6 +114,21 @@ export default function ContactPage() {
               >
                 {contactEmail}
               </a>
+            </div>
+            <div className="surface hairline rounded-2xl p-6">
+              <Phone className="mb-3 size-8 text-accent" aria-hidden />
+              <h2 className="font-semibold">Phone / WhatsApp</h2>
+              <div className="mt-2 grid gap-1.5 text-sm">
+                <a
+                  href={`tel:${contactPhone.replace(/\s+/g, '')}`}
+                  className="font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  {contactPhone}
+                </a>
+                <div className="text-muted-foreground">
+                  WhatsApp: <span className="font-medium text-foreground">{contactWhatsApp}</span>
+                </div>
+              </div>
             </div>
             <div className="surface hairline rounded-2xl p-6">
               <Clock className="mb-3 size-8 text-accent" aria-hidden />
@@ -129,22 +150,50 @@ export default function ContactPage() {
           <div className="rounded-3xl border border-border/70 bg-secondary/40 p-8 md:p-10">
             <h2 className="font-serif text-2xl font-semibold">Send a message</h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              This opens your email app with your details filled in — nothing is stored on this
-              site.
+              Send a message directly from the site. We&apos;ll reply by email.
             </p>
             <form
               className="mt-8 grid gap-5"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
+                setSent(false)
+                setError(null)
                 const form = e.currentTarget
                 const data = new FormData(form)
                 const topic =
                   topicOptions.find((o) => o.value === data.get('topic'))?.label ?? 'General'
-                const subject = encodeURIComponent(`PGF — ${topic}`)
-                const body = encodeURIComponent(
-                  `Topic: ${topic}\n\nName: ${data.get('name')}\nEmail: ${data.get('email')}\nPhone: ${data.get('phone') || '—'}\n\nMessage:\n${data.get('message')}`,
-                )
-                window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`
+                const payload = {
+                  topic,
+                  name: String(data.get('name') || ''),
+                  email: String(data.get('email') || ''),
+                  phone: String(data.get('phone') || ''),
+                  message: String(data.get('message') || ''),
+                }
+
+                try {
+                  setSubmitting(true)
+                  const res = await fetch('/api/contact-email', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify(payload),
+                  })
+
+                  if (!res.ok) {
+                    const j = (await res.json().catch(() => null)) as
+                      | { error?: string; status?: number; details?: string }
+                      | null
+                    const details = j?.details ? ` ${j.details}` : ''
+                    setError((j?.error || 'Message failed to send. Please try again.') + details)
+                    return
+                  }
+
+                  form.reset()
+                  setSent(true)
+                } catch {
+                  setError('Message failed to send. Please try again.')
+                } finally {
+                  setSubmitting(false)
+                }
               }}
             >
               <div className="grid gap-2">
@@ -195,9 +244,21 @@ export default function ContactPage() {
                   className="resize-y min-h-[120px]"
                 />
               </div>
-              <Button type="submit" className="rounded-full w-full sm:w-auto">
-                Open in email
+              <Button
+                type="submit"
+                className="rounded-full w-full sm:w-auto"
+                disabled={submitting}
+              >
+                {submitting ? 'Sending…' : 'Send message'}
               </Button>
+              {sent ? (
+                <p className="text-sm text-foreground/70">
+                  Message sent. We&apos;ll reply soon — and we&apos;ve sent you a confirmation.
+                </p>
+              ) : null}
+              {error ? (
+                <p className="text-sm text-destructive">{error}</p>
+              ) : null}
             </form>
           </div>
         </div>

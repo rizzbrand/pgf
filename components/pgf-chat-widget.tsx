@@ -23,6 +23,53 @@ type ChatMessage = {
   text: string
 }
 
+function renderChatText(text: string) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n')
+  const nodes: React.ReactNode[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    // Skip leading blank lines
+    if (!lines[i]?.trim()) {
+      i++
+      continue
+    }
+
+    // Ordered list block: "1. foo"
+    if (/^\d+\.\s+/.test(lines[i]!)) {
+      const items: string[] = []
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i]!)) {
+        items.push(lines[i]!.replace(/^\d+\.\s+/, '').trim())
+        i++
+      }
+      nodes.push(
+        <ol key={`ol-${nodes.length}`} className="ml-5 list-decimal space-y-1.5">
+          {items.map((item, idx) => (
+            <li key={idx} className="leading-relaxed">
+              {item}
+            </li>
+          ))}
+        </ol>,
+      )
+      continue
+    }
+
+    // Paragraph block until a blank line
+    const para: string[] = []
+    while (i < lines.length && lines[i]?.trim()) {
+      para.push(lines[i]!)
+      i++
+    }
+    nodes.push(
+      <p key={`p-${nodes.length}`} className="leading-relaxed">
+        {para.join('\n')}
+      </p>,
+    )
+  }
+
+  return <div className="grid gap-2 whitespace-pre-wrap">{nodes}</div>
+}
+
 const WELCOME: ChatMessage = {
   id: 'welcome',
   role: 'assistant',
@@ -36,11 +83,13 @@ const DEMO_REPLIES = [
 ]
 
 export function PgfChatWidget() {
+  const contentId = useId()
   const titleId = useId()
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME])
   const [pending, setPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
 
   const scrollToEnd = useCallback(() => {
@@ -51,7 +100,7 @@ export function PgfChatWidget() {
     if (open) scrollToEnd()
   }, [open, messages, pending, scrollToEnd])
 
-  const send = useCallback(() => {
+  const send = useCallback(async () => {
     const text = input.trim()
     if (!text || pending) return
 
@@ -63,17 +112,62 @@ export function PgfChatWidget() {
     setMessages((m) => [...m, userMsg])
     setInput('')
     setPending(true)
+    setError(null)
 
-    window.setTimeout(() => {
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMsg].map((m) => ({ role: m.role, text: m.text })),
+        }),
+      })
+
+      if (!res.ok) {
+        let msg = 'AI is not connected yet. Showing demo replies.'
+        try {
+          const e = (await res.json()) as { error?: string; status?: number; details?: string }
+          if (e?.details) {
+            msg = `AI error (${e.status ?? res.status}): ${e.details}`
+          } else if (e?.error) {
+            msg = `AI error (${e.status ?? res.status}): ${e.error}`
+          }
+        } catch {
+          // ignore
+        }
+        // Fallback to demo replies for UI continuity
+        const reply: ChatMessage = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          text: DEMO_REPLIES[Math.floor(Math.random() * DEMO_REPLIES.length)]!,
+        }
+        setMessages((m) => [...m, reply])
+        setError(msg)
+        return
+      }
+
+      const data = (await res.json()) as { text?: string }
+      const replyText = data?.text?.trim()
+      if (!replyText) throw new Error('Empty response')
+
+      const reply: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        text: replyText,
+      }
+      setMessages((m) => [...m, reply])
+    } catch {
       const reply: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         text: DEMO_REPLIES[Math.floor(Math.random() * DEMO_REPLIES.length)]!,
       }
       setMessages((m) => [...m, reply])
+      setError('AI is not connected yet. Showing demo replies.')
+    } finally {
       setPending(false)
-    }, 700)
-  }, [input, pending])
+    }
+  }, [input, pending, messages])
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -97,7 +191,7 @@ export function PgfChatWidget() {
             )}
             aria-label="Open PGF assistant chat"
             aria-expanded={open}
-            aria-controls={titleId}
+            aria-controls={contentId}
           >
             <span className="relative flex size-8 items-center justify-center">
               <MessageCircle className="size-7" strokeWidth={1.75} aria-hidden />
@@ -112,12 +206,15 @@ export function PgfChatWidget() {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
+          id={contentId}
           showCloseButton={false}
           className={cn(
-            'flex max-h-[min(560px,85vh)] min-h-0 w-full max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-md',
+            'grid h-[min(560px,85vh)] w-full max-w-[calc(100vw-1.5rem)] grid-rows-[auto,minmax(0,1fr),auto] gap-0 overflow-hidden p-0 sm:max-w-md',
             'border-border/80 bg-[var(--pgf-off-white)] shadow-2xl',
           )}
         >
+          {/* Extra title for Radix a11y (in case the styled title is missed). */}
+          <DialogTitle className="sr-only">PGF Assistant</DialogTitle>
           <DialogHeader
             className={cn(
               'shrink-0 space-y-0 border-b border-white/10 bg-[var(--pgf-dark-purple)] px-4 py-4 text-left',
@@ -153,8 +250,8 @@ export function PgfChatWidget() {
             </div>
           </DialogHeader>
 
-          <ScrollArea className="h-72 min-h-0 flex-1 px-3 py-4 sm:h-80">
-            <div className="flex flex-col gap-3 pr-2">
+          <ScrollArea className="h-full min-h-0 px-3 py-4">
+            <div className="flex flex-col gap-3 pr-2 pb-4">
               {messages.map((m) => (
                 <div
                   key={m.id}
@@ -165,7 +262,7 @@ export function PgfChatWidget() {
                       : 'mr-auto border border-border/60 bg-card text-foreground',
                   )}
                 >
-                  {m.text}
+                  {renderChatText(m.text)}
                 </div>
               ))}
               {pending && (
@@ -178,11 +275,16 @@ export function PgfChatWidget() {
                   Thinking…
                 </div>
               )}
+              {error && (
+                <div className="mr-auto rounded-2xl border border-border/60 bg-card px-3.5 py-2.5 text-[12px] text-muted-foreground">
+                  {error}
+                </div>
+              )}
               <div ref={endRef} />
             </div>
           </ScrollArea>
 
-          <div className="shrink-0 border-t border-border/70 bg-card/50 p-3">
+          <div className="border-t border-border/70 bg-card/60 p-3">
             <div className="flex gap-2 rounded-2xl border border-border/80 bg-background p-1.5 shadow-inner">
               <Textarea
                 value={input}

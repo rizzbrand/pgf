@@ -483,7 +483,7 @@ export default function Home() {
               {[
                 {
                   name: 'Hairdressing Track',
-                  image: PGF_IMAGES.hairdressing,
+                  image: PGF_IMAGES.fashion,
                   imageAlt: 'Hairdressing training at PGF',
                   highlight: 'Craft + client-ready skills',
                   description:
@@ -492,7 +492,7 @@ export default function Home() {
                 },
                 {
                   name: 'Fashion Track',
-                  image: PGF_IMAGES.fashion,
+                  image: PGF_IMAGES.hairdressing,
                   imageAlt: 'Fashion and design training at PGF',
                   highlight: 'Design + business fundamentals',
                   description:
@@ -542,7 +542,9 @@ export default function Home() {
 
                     <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-2.5">
                       <Button size="sm" className="rounded-full w-full sm:w-auto" asChild>
-                        <Link href="/contact">Apply for this track</Link>
+                        <Link href={`/apply?track=${i === 0 ? 'hairdressing' : 'fashion'}`}>
+                          Apply for this track
+                        </Link>
                       </Button>
                       <Button
                         size="sm"
@@ -676,7 +678,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="rounded-full px-8" asChild>
-              <Link href="/contact">Apply Now</Link>
+              <Link href="/apply">Apply Now</Link>
             </Button>
             <Button size="lg" variant="outline" className="rounded-full px-8 bg-transparent text-[#2a152c]" asChild>
               <Link href="/contact">Schedule a Call</Link>
