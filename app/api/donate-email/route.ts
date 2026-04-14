@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
+import { renderDonateOwnerEmail, renderDonateReceiptEmail } from '@/lib/email-templates'
 
 export const runtime = 'nodejs'
 
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
     to,
     subject,
     text,
+    html: renderDonateOwnerEmail({ name, email, phone, message }),
     replyTo: email,
     tags: [
       { name: 'source', value: 'website' },
@@ -87,6 +89,7 @@ export async function POST(req: Request) {
       'Phone / WhatsApp: +233 203 427 795',
       'Website: https://privilegegirlsfoundation.com/donate',
     ].join('\n'),
+    html: renderDonateReceiptEmail({ name, message }),
     replyTo: 'info@privilegegirlsfoundation.com',
     tags: [
       { name: 'source', value: 'website' },

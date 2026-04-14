@@ -3,6 +3,7 @@ export type ResendSendEmailInput = {
   to: string | string[]
   subject: string
   text: string
+  html?: string
   replyTo?: string
   tags?: Array<{ name: string; value: string }>
 }
@@ -46,6 +47,7 @@ export async function resendSendEmail(input: ResendSendEmailInput) {
       to: input.to,
       subject: input.subject,
       text: input.text,
+      html: input.html,
       reply_to: input.replyTo,
       tags: input.tags,
     }),

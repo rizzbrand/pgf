@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
+import {
+  renderContactOwnerEmail,
+  renderContactReceiptEmail,
+} from '@/lib/email-templates'
 
 export const runtime = 'nodejs'
 
@@ -61,6 +65,13 @@ export async function POST(req: Request) {
     to,
     subject,
     text,
+    html: renderContactOwnerEmail({
+      topic,
+      name,
+      email,
+      phone,
+      message,
+    }),
     replyTo: email,
     tags: [
       { name: 'source', value: 'website' },
@@ -97,6 +108,7 @@ export async function POST(req: Request) {
       'Location: North Legon, Accra, Ghana',
       'Website: https://privilegegirlsfoundation.com/contact',
     ].join('\n'),
+    html: renderContactReceiptEmail({ name, topic, message }),
     replyTo: 'info@privilegegirlsfoundation.com',
     tags: [
       { name: 'source', value: 'website' },

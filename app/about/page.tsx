@@ -506,7 +506,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <PgfFieldNotes showCinematicBand={false} />
+      <div className="hidden md:block">
+        <PgfFieldNotes showCinematicBand={false} />
+      </div>
 
       <SiteFooter
         variant="simple"

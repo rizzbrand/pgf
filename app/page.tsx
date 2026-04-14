@@ -210,8 +210,10 @@ export default function Home() {
             Privilege Girls Foundation empowers ambitious women entrepreneurs through mentorship, resources, and an exclusive community of changemakers.
           </p>
           <div data-hero-el className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-            <Button size="lg" className="rounded-full px-8">
-              Apply to Join <ArrowRight className="inline-block ml-2" size={18} />
+            <Button size="lg" className="rounded-full px-8" asChild>
+              <Link href="/apply">
+                Apply to Join <ArrowRight className="inline-block ml-2" size={18} />
+              </Link>
             </Button>
             <Button
               size="lg"
@@ -562,7 +564,9 @@ export default function Home() {
         </div>
       </section>
 
-      <PgfFieldNotes />
+      <div className="hidden md:block">
+        <PgfFieldNotes />
+      </div>
 
       {/* Impact Section */}
       <section id="impact" className="py-20 px-6">

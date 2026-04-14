@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
+import { renderApplyOwnerEmail, renderApplyReceiptEmail } from '@/lib/email-templates'
 
 export const runtime = 'nodejs'
 
@@ -67,6 +68,17 @@ export async function POST(req: Request) {
     to,
     subject,
     text,
+    html: renderApplyOwnerEmail({
+      track,
+      name,
+      email,
+      phone,
+      age,
+      location,
+      availability,
+      experience,
+      message,
+    }),
     replyTo: email,
     tags: [
       { name: 'source', value: 'website' },
@@ -102,6 +114,7 @@ export async function POST(req: Request) {
       'Phone / WhatsApp: +233 203 427 795',
       'Website: https://privilegegirlsfoundation.com/apply',
     ].join('\n'),
+    html: renderApplyReceiptEmail({ name, track }),
     replyTo: 'info@privilegegirlsfoundation.com',
     tags: [
       { name: 'source', value: 'website' },
