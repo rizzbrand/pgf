@@ -5,7 +5,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { ArrowLeft, Building2, Check, Copy, Heart, Package } from 'lucide-react'
+import { ArrowLeft, Building2, Check, Copy, Download, Heart, Package } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteLogo } from '@/components/site-logo'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,7 @@ export default function DonatePage() {
   const [submitting, setSubmitting] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const manifestoHref = '/manifesto.pdf'
 
   const bankDetails = {
     bankName: 'ECOBANK GHANA',
@@ -93,6 +94,22 @@ export default function DonatePage() {
           <p className="mt-4 font-serif text-xl font-semibold text-foreground">
             Your contribution is not a handout. It is an investment.
           </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button size="sm" className="rounded-full w-full sm:w-auto" asChild>
+              <Link href="/contact">Talk to the team</Link>
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-full bg-transparent w-full sm:w-auto"
+              asChild
+            >
+              <a href={manifestoHref} download>
+                <Download className="size-4" />
+                Download manifesto
+              </a>
+            </Button>
+          </div>
           </div>
 
           <div className="surface hairline relative overflow-hidden rounded-3xl">
