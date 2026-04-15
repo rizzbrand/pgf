@@ -5,6 +5,7 @@ import {
   renderContactOwnerEmail,
   renderContactReceiptEmail,
 } from '@/lib/email-templates'
+import { prisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
@@ -45,6 +46,21 @@ export async function POST(req: Request) {
 
   if (!topic || !name || !email || !message) {
     return badRequest('Missing required fields')
+  }
+
+  // Persist for admin dashboard (best-effort; do not fail submission).
+  try {
+    await prisma.contactSubmission.create({
+      data: {
+        topic,
+        name,
+        email,
+        phone: phone || null,
+        message,
+      },
+    })
+  } catch {
+    // no-op
   }
 
   const to = process.env.CONTACT_INBOX || 'info@privilegegirlsfoundation.com'

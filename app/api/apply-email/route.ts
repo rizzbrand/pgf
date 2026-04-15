@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
 import { renderApplyOwnerEmail, renderApplyReceiptEmail } from '@/lib/email-templates'
+import { prisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
@@ -41,6 +42,25 @@ export async function POST(req: Request) {
 
   if (!track || !name || !email || !phone) {
     return badRequest('Missing required fields')
+  }
+
+  // Persist for admin dashboard (best-effort; do not fail submission).
+  try {
+    await prisma.applicationSubmission.create({
+      data: {
+        track,
+        name,
+        email,
+        phone,
+        age: age || null,
+        location: location || null,
+        availability: availability || null,
+        experience: experience || null,
+        message: message || null,
+      },
+    })
+  } catch {
+    // no-op
   }
 
   const to = process.env.APPLICATIONS_INBOX || process.env.CONTACT_INBOX || 'info@privilegegirlsfoundation.com'

@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  // Use string IDs (Better Auth generates string IDs; MongoDB supports string _id)
+  id            String    @id @default(cuid()) @map("_id")
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Better Auth additional field
+  role          String?   @default("user")
+
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid()) @map("_id")
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid()) @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(cuid()) @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
+}
+
+model ApplicationSubmission {
+  id           String   @id @default(cuid()) @map("_id")
+  createdAt    DateTime @default(now())
+
+  track        String
+  name         String
+  email        String
+  phone        String
+  age          String?
+  location     String?
+  availability String?
+  experience   String?
+  message      String?
+
+  @@index([createdAt])
+  @@index([email])
+  @@map("application_submission")
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+
+  topic     String
+  name      String
+  email     String
+  phone     String?
+  message   String
+
+  @@index([createdAt])
+  @@index([email])
+  @@map("contact_submission")
+}
+
+model DonateSubmission {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+
+  name      String
+  email     String
+  phone     String?
+  message   String
+
+  @@index([createdAt])
+  @@index([email])
+  @@map("donate_submission")
+}
+

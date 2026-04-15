@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
 import { renderDonateOwnerEmail, renderDonateReceiptEmail } from '@/lib/email-templates'
+import { prisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
@@ -31,6 +32,20 @@ export async function POST(req: Request) {
 
   if (!name || !email || !message) {
     return badRequest('Missing required fields')
+  }
+
+  // Persist for admin dashboard (best-effort; do not fail submission).
+  try {
+    await prisma.donateSubmission.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        message,
+      },
+    })
+  } catch {
+    // no-op
   }
 
   const to = process.env.DONATIONS_INBOX || 'info@privilegegirlsfoundation.com'
