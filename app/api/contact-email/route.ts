@@ -5,7 +5,7 @@ import {
   renderContactOwnerEmail,
   renderContactReceiptEmail,
 } from '@/lib/email-templates'
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
@@ -31,6 +31,7 @@ function toTagValue(input: string) {
 }
 
 export async function POST(req: Request) {
+  const prisma = getPrisma()
   let body: ContactPayload
   try {
     body = (await req.json()) as ContactPayload

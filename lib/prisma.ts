@@ -5,9 +5,17 @@ declare global {
   var __pgfPrisma: PrismaClient | undefined
 }
 
-export const prisma =
-  global.__pgfPrisma ??
-  (global.__pgfPrisma = new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
-  }))
+export function getPrisma() {
+  // Prevent build-time crashes (e.g. Vercel "collect page data") when env is not set.
+  if (!process.env.DATABASE_URL) {
+    throw new Error('Missing DATABASE_URL')
+  }
+
+  return (
+    global.__pgfPrisma ??
+    (global.__pgfPrisma = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    }))
+  )
+}
 

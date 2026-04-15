@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,6 +13,7 @@ function toCsvCell(value: unknown) {
 }
 
 export default async function AdminApplicationsPage() {
+  const prisma = getPrisma()
   const rows = await prisma.applicationSubmission.findMany({
     orderBy: { createdAt: 'desc' },
     take: 500,

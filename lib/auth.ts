@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
 
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@privilegegirlsfoundation.com').trim().toLowerCase()
 
@@ -10,6 +10,8 @@ let _auth: ReturnType<typeof betterAuth> | null = null
 
 export function getAuth() {
   if (_auth) return _auth
+
+  const prisma = getPrisma()
 
   _auth = betterAuth({
     emailAndPassword: {

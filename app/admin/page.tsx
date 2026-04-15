@@ -1,12 +1,13 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+  const prisma = getPrisma()
   const [applications, contact, donations] = await Promise.all([
     prisma.applicationSubmission.count(),
     prisma.contactSubmission.count(),

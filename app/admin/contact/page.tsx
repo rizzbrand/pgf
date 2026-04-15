@@ -1,12 +1,13 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminContactSubmissionsPage() {
+  const prisma = getPrisma()
   const rows = await prisma.contactSubmission.findMany({
     orderBy: { createdAt: 'desc' },
     take: 500,

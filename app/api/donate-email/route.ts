@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { getResendFrom, resendSendEmail } from '@/lib/resend'
 import { renderDonateOwnerEmail, renderDonateReceiptEmail } from '@/lib/email-templates'
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
 
@@ -18,6 +18,7 @@ function badRequest(error: string) {
 }
 
 export async function POST(req: Request) {
+  const prisma = getPrisma()
   let body: DonatePayload
   try {
     body = (await req.json()) as DonatePayload
