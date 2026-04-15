@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
-
 declare global {
   // eslint-disable-next-line no-var
-  var __pgfPrisma: PrismaClient | undefined
+  var __pgfPrisma: unknown | undefined
 }
 
 export function getPrisma() {
@@ -10,6 +8,10 @@ export function getPrisma() {
   if (!process.env.DATABASE_URL) {
     throw new Error('Missing DATABASE_URL')
   }
+
+  // Lazy import so the build step doesn't require Prisma engine binaries.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { PrismaClient } = require('@prisma/client') as typeof import('@prisma/client')
 
   return (
     global.__pgfPrisma ??
