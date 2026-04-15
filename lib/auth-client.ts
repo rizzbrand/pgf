@@ -1,6 +1,5 @@
 import { createAuthClient } from 'better-auth/react'
 
-export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL,
-})
+// Use same-origin requests to avoid cross-domain CORS preflights (www vs non-www).
+export const authClient = createAuthClient()
 

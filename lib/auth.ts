@@ -12,8 +12,17 @@ export function getAuth() {
   if (_auth) return _auth
 
   const prisma = getPrisma()
+  const baseURL =
+    (process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || '').trim() ||
+    'http://localhost:3000'
 
   _auth = betterAuth({
+    baseURL,
+    trustedOrigins: [
+      'https://privilegegirlsfoundation.com',
+      'https://www.privilegegirlsfoundation.com',
+      'http://localhost:3000',
+    ],
     emailAndPassword: {
       enabled: true,
     },
